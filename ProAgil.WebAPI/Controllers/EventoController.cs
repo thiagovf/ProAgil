@@ -24,13 +24,12 @@ namespace ProAgil.WebAPI.Controllers
             ObjectResult resultado;
             try {
                 var eventos = await repository.GetAllEventosAssync(includePalestrantes);
-                resultado = Ok(eventos);
+                return Ok(eventos);
             } 
             catch (System.Exception)
             {
-                resultado = this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
-            return resultado;
         }
 
         [HttpGet("{EventoId}")]
@@ -40,52 +39,47 @@ namespace ProAgil.WebAPI.Controllers
             try 
             {
                 var evento = await repository.GetEventoAssync(eventoId, includePalestrantes);
-                resultado = Ok(evento);
+                return Ok(evento);
             }
             catch (System.Exception)
             {
-                resultado = this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
-            return resultado;
         }
 
         [HttpGet("getByTema/{tema}")]
         public async Task<IActionResult> Get(string tema)
         {
-            ObjectResult resultado;
             try 
             {
                 var eventos = await repository.GetAllEventosAssync(tema, includePalestrantes);
-                resultado = Ok(eventos);
+                return Ok(eventos);
             }
             catch (System.Exception)
             {
-                resultado = this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
-            return resultado;
         }
         
         [HttpPost]
         public async Task<IActionResult> Post(Evento evento)
         {
-            ObjectResult resultado;
             try
             {
                 repository.Add(evento);
                 if (await repository.SaveChangesAssync())
                 {
-                    resultado = Created($"/api/evento/{evento.Id}", evento);
+                    return Created($"/api/evento/{evento.Id}", evento);
                 } 
                 else 
                 {
-                    resultado = this.StatusCode(StatusCodes.Status400BadRequest, "");
+                    return this.StatusCode(StatusCodes.Status400BadRequest, "");
                 }
             }
             catch (System.Exception)
             {
-                resultado = this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
-            return resultado;
         }
 
         [HttpPut]
