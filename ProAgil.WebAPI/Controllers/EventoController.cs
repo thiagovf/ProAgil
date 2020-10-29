@@ -21,7 +21,6 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ObjectResult resultado;
             try {
                 var eventos = await repository.GetAllEventosAssync(includePalestrantes);
                 return Ok(eventos);
@@ -35,7 +34,6 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet("{EventoId}")]
         public async Task<IActionResult> Get(int eventoId)
         {
-            ObjectResult resultado;
             try 
             {
                 var evento = await repository.GetEventoAssync(eventoId, includePalestrantes);
@@ -71,46 +69,54 @@ namespace ProAgil.WebAPI.Controllers
                 {
                     return Created($"/api/evento/{evento.Id}", evento);
                 } 
-                else 
+            }
+            catch (System.Exception)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+            }
+            return NotFound();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put(int eventoId, Evento evento)
+        {
+            try 
+            {
+                Evento eventoDoBanco = await repository.GetEventoAssync(eventoId, false);
+                if (eventoDoBanco == null) return NotFound();
+                
+                repository.Update(evento);
+                if (await repository.SaveChangesAssync())
                 {
-                    return this.StatusCode(StatusCodes.Status400BadRequest, "");
+                    return Created($"/api/evento/{evento.Id}", evento);
                 }
             }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
+            return BadRequest();
         }
-
-        [HttpPut]
-        public async Task<IActionResult> Put(int eventoId, Evento evento)
+        
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int eventoId)
         {
-            ObjectResult resultado;
             try 
             {
                 Evento eventoDoBanco = await repository.GetEventoAssync(eventoId, false);
-                if (eventoDoBanco == null)
+                if (eventoDoBanco == null) return NotFound();
+                
+                repository.Delete(eventoDoBanco);
+                if (await repository.SaveChangesAssync())
                 {
-                    resultado = this.StatusCode(StatusCodes.Status404NotFound, "");
+                    return Ok();
                 }
-                else 
-                {
-                    repository.Update(evento);
-                    if (await repository.SaveChangesAssync())
-                    {
-                        resultado = Created($"/api/evento/{evento.Id}", evento);
-                    }
-                    else 
-                    {
-                        resultado = this.StatusCode(StatusCodes.Status400BadRequest, "");
-                    }
-                }
-            }
+            } 
             catch (System.Exception)
             {
-                resultado = this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
-            return resultado;
+            return BadRequest();
         }
     }
 }
