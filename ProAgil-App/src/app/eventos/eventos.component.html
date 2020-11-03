@@ -2,7 +2,7 @@
   <div class="form-group mb-2">
     <label class="mr-2">Filtro:</label>
     <input type="text" class="form-control mr-2" placeholder="buscar"
-      [(ngModel)]="filtroLista"/>
+    [(ngModel)]="filtroLista"/>
   </div>
 </div>
 <h3>Filtro: {{filtroLista}}</h3>
@@ -27,9 +27,9 @@
     <tr *ngFor="let evento of eventosFiltrados">
       <td>
         <img *ngIf="mostrarImagem"
-          src='http://localhost:5000/img/{{evento.imagemURL}}'
-          [style.width.px]='imagemLargura'
-          [style.margin.px]='imagemMargem'>
+        src='http://localhost:5000/img/{{evento.imagemURL}}'
+        [style.width.px]='imagemLargura'
+        [style.margin.px]='imagemMargem'>
       </td>
       <td>{{evento.id}}</td>
       <td>{{evento.tema}}</td>
@@ -45,8 +45,15 @@
         </div>
       </td>
       <td>
-        <button class="btn btn-success"></button>
-        <button class="btn btn-danger"></button>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-success" 
+              tooltip="Editar" (click)="openModal(template)">
+            <i class="fa fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" tooltip="Excluir">
+            <i class="fa fa-eraser"></i>
+          </button>
+        </div>
       </td>
     </tr>
   </tbody>
@@ -60,3 +67,17 @@
     </tr>
   </tfoot>
 </table>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Modal</h4>
+    <button type="button" class="close pull-right" 
+    aria-label="Close" (click)="modalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  This is a modal.
+</div>
+</ng-template>
+
