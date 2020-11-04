@@ -6,7 +6,7 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DateTimeFormatPipe } from './_helps/DateTimeFormat.pipe';
 
@@ -29,7 +29,8 @@ import { NavComponent } from './nav/nav.component';
       AppRoutingModule,
       HttpClientModule,
       FormsModule,
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      ReactiveFormsModule
    ],
    bootstrap: [
       AppComponent
