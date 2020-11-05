@@ -115,7 +115,7 @@
     </div>
     <div class="form-group col-md-4">
       <label>Data e Hora</label>
-      <input type="text" class="form-control"
+      <input type="text" class="form-control" bsDatepicker
         [ngClass]="{'is-invalid': registerForm.get('dataEvento').errors && registerForm.get('dataEvento').touched}"
         formControlName="dataEvento" placeholder="">
       <div class="invalid-feedback"
@@ -181,8 +181,10 @@
 <button class="btn btn-secondary" (click)="openModal(template)">
   Fechar
 </button>
-<button class="btn btn-primary" (click)="salvarAlteracao()">
+<button class="btn btn-primary" [disabled]="!registerForm.valid" (click)="salvarAlteracao()">
   Salvar Alterações
 </button>
 <br>
 <br>
+<p>Form values: {{registerForm.value | json}}</p>
+<p>Form status: {{registerForm.status | json}}</p>
