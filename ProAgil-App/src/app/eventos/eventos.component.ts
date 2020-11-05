@@ -27,7 +27,6 @@ export class EventosComponent implements OnInit {
 
   constructor(
     private eventoService: EventoService,
-    private modalService: BsModalService,
     private fb: FormBuilder,
     private localeService: BsLocaleService
   ) {
@@ -58,8 +57,8 @@ export class EventosComponent implements OnInit {
 
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+  openModal(template: any) {
+    template.show();
   }
 
   ngOnInit() {
