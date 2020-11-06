@@ -21,6 +21,7 @@ export class EventosComponent implements OnInit {
   evento: Evento;
   imagemLargura = 50;
   imagemMargem = 2;
+  modoSalvar: string;
   mostrarImagem = false;
   modalRef: BsModalRef;
   registerForm: FormGroup;
@@ -45,29 +46,32 @@ export class EventosComponent implements OnInit {
 
   validation() {
     this.registerForm = this.fb.group({
-      id: [''],
       tema: ['',[Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
       local: ['', Validators.required],
       dataEvento: ['', Validators.required],
       qtdPessoas: ['', [Validators.required, Validators.max(120000)]],
       imagemURL: ['', Validators.required],
       telefone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      lotes: [''],
-      redesSociais: [''],
-      palestranteEventos: ['']
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
   editar(template: any, evento: Evento): void {
     this.openModal(template);
-    this.registerForm.setValue(evento);
+    this.evento = evento;
+    this.modoSalvar = 'put';
+    this.registerForm.patchValue(evento);
+  }
+
+  salvar(template: any): void {
+    this.openModal(template);
+    this.modoSalvar = 'post';
   }
 
   salvarAlteracao(template: any): void {
     if (this.registerForm.valid) {
-      this.evento = Object.assign({}, this.registerForm.value);
-      if (this.evento.id) {
+      if (this.modoSalvar === 'put') {
+        this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
         this.eventoService.put(this.evento).subscribe(() => {
           template.hide();
           this.getEventos();
@@ -75,6 +79,7 @@ export class EventosComponent implements OnInit {
           console.log(error);
         });
       } else {
+        this.evento = Object.assign({}, this.registerForm.value);
         this.eventoService.post(this.evento).subscribe(
           (novoEvento: Evento) => {
             template.hide();
