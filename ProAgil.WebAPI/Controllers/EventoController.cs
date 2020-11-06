@@ -78,11 +78,11 @@ namespace ProAgil.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(int eventoId, Evento evento)
+        public async Task<IActionResult> Put(Evento evento)
         {
             try 
             {
-                Evento eventoDoBanco = await repository.GetEventoAssync(eventoId, false);
+                Evento eventoDoBanco = await repository.GetEventoAssync(evento.Id, false);
                 if (eventoDoBanco == null) return NotFound();
                 
                 repository.Update(evento);

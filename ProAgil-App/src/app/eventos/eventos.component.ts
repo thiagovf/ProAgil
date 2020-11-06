@@ -6,6 +6,7 @@ import { EventoService } from '../_services/evento.service';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
+import { templateJitUrl } from '@angular/compiler';
 defineLocale('pt-br', ptBrLocale);
 
 @Component({
@@ -17,6 +18,7 @@ export class EventosComponent implements OnInit {
 
   eventosFiltrados: Evento[];
   eventos: Evento[];
+  evento: Evento;
   imagemLargura = 50;
   imagemMargem = 2;
   mostrarImagem = false;
@@ -43,21 +45,51 @@ export class EventosComponent implements OnInit {
 
   validation() {
     this.registerForm = this.fb.group({
+      id: [''],
       tema: ['',[Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
       local: ['', Validators.required],
       dataEvento: ['', Validators.required],
       qtdPessoas: ['', [Validators.required, Validators.max(120000)]],
       imagemURL: ['', Validators.required],
       telefone: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      lotes: [''],
+      redesSociais: [''],
+      palestranteEventos: ['']
     });
   }
 
-  salvarAlteracao() {
-
+  editar(template: any, evento: Evento): void {
+    this.openModal(template);
+    this.registerForm.setValue(evento);
   }
 
-  openModal(template: any) {
+  salvarAlteracao(template: any): void {
+    if (this.registerForm.valid) {
+      this.evento = Object.assign({}, this.registerForm.value);
+      if (this.evento.id) {
+        this.eventoService.put(this.evento).subscribe(() => {
+          template.hide();
+          this.getEventos();
+        }, error => {
+          console.log(error);
+        });
+      } else {
+        this.eventoService.post(this.evento).subscribe(
+          (novoEvento: Evento) => {
+            template.hide();
+            this.getEventos();
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      }
+    }
+  }
+
+  openModal(template: any): void {
+    this.registerForm.reset();
     template.show();
   }
 
