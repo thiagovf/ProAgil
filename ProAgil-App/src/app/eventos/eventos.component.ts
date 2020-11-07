@@ -16,6 +16,7 @@ defineLocale('pt-br', ptBrLocale);
 })
 export class EventosComponent implements OnInit {
 
+  bodyDeletarEvento: string;
   eventosFiltrados: Evento[];
   eventos: Evento[];
   evento: Evento;
@@ -66,6 +67,23 @@ export class EventosComponent implements OnInit {
   salvar(template: any): void {
     this.openModal(template);
     this.modoSalvar = 'post';
+  }
+
+  excluirEvento(evento: Evento, template: any): void {
+    template.show();
+    this.evento = evento;
+    this.bodyDeletarEvento = `Tem certeza que deseja excluir o Evento: ${evento.tema}, Código: ${evento.id}?`;
+  }
+
+  confirmarDelete(template: any): void {
+    this.eventoService.delete(this.evento.id).subscribe(
+      () => {
+        template.hide();
+        this.getEventos();
+      }, error => {
+        console.log(error);
+      }
+    );
   }
 
   salvarAlteracao(template: any): void {
