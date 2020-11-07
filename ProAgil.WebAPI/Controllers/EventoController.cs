@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProAgil.Domain;
 using ProAgil.Repository;
+using ProAgil.WebAPI.DTO;
 
 namespace ProAgil.WebAPI.Controllers
 {
@@ -12,19 +15,23 @@ namespace ProAgil.WebAPI.Controllers
     {
         private readonly IProAgilRepository repository;
         private readonly bool includePalestrantes = true;
+        private readonly IMapper mapper;
 
-        public EventoController(IProAgilRepository repository)
+        public EventoController(IProAgilRepository repository, IMapper mapper)
         {
+            this.mapper = mapper;
             this.repository = repository;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try {
+            try
+            {
                 var eventos = await repository.GetAllEventosAssync(includePalestrantes);
-                return Ok(eventos);
-            } 
+                var eventosDTO = mapper.Map<IEnumerable<EventoDTO>>(eventos);
+                return Ok(eventosDTO);
+            }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
@@ -34,10 +41,11 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet("{EventoId}")]
         public async Task<IActionResult> Get(int eventoId)
         {
-            try 
+            try
             {
                 var evento = await repository.GetEventoAssync(eventoId, includePalestrantes);
-                return Ok(evento);
+                var eventoDTO = mapper.Map<EventoDTO>(evento);
+                return Ok(eventoDTO);
             }
             catch (System.Exception)
             {
@@ -48,7 +56,7 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet("getByTema/{tema}")]
         public async Task<IActionResult> Get(string tema)
         {
-            try 
+            try
             {
                 var eventos = await repository.GetAllEventosAssync(tema, includePalestrantes);
                 return Ok(eventos);
@@ -58,7 +66,7 @@ namespace ProAgil.WebAPI.Controllers
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
             }
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Post(Evento evento)
         {
@@ -68,7 +76,7 @@ namespace ProAgil.WebAPI.Controllers
                 if (await repository.SaveChangesAssync())
                 {
                     return Created($"/api/evento/{evento.Id}", evento);
-                } 
+                }
             }
             catch (System.Exception)
             {
@@ -80,11 +88,11 @@ namespace ProAgil.WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(Evento evento)
         {
-            try 
+            try
             {
                 Evento eventoDoBanco = await repository.GetEventoAssync(evento.Id, false);
                 if (eventoDoBanco == null) return NotFound();
-                
+
                 repository.Update(evento);
                 if (await repository.SaveChangesAssync())
                 {
@@ -97,21 +105,21 @@ namespace ProAgil.WebAPI.Controllers
             }
             return BadRequest();
         }
-        
+
         [HttpDelete("{EventoId}")]
         public async Task<IActionResult> Delete(int eventoId)
         {
-            try 
+            try
             {
                 Evento eventoDoBanco = await repository.GetEventoAssync(eventoId, false);
                 if (eventoDoBanco == null) return NotFound();
-                
+
                 repository.Delete(eventoDoBanco);
                 if (await repository.SaveChangesAssync())
                 {
                     return Ok();
                 }
-            } 
+            }
             catch (System.Exception)
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Banco de Dados Falhou");
