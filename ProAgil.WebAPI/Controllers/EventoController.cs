@@ -29,7 +29,7 @@ namespace ProAgil.WebAPI.Controllers
             try
             {
                 var eventos = await repository.GetAllEventosAssync(includePalestrantes);
-                var eventosDTO = mapper.Map<IEnumerable<EventoDTO>>(eventos);
+                var eventosDTO = mapper.Map<EventoDTO[]>(eventos);
                 return Ok(eventosDTO);
             }
             catch (System.Exception)
@@ -59,7 +59,8 @@ namespace ProAgil.WebAPI.Controllers
             try
             {
                 var eventos = await repository.GetAllEventosAssync(tema, includePalestrantes);
-                return Ok(eventos);
+                var eventosDTO = mapper.Map<EventoDTO[]>(eventos);
+                return Ok(eventosDTO);
             }
             catch (System.Exception)
             {
@@ -68,14 +69,15 @@ namespace ProAgil.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Evento evento)
+        public async Task<IActionResult> Post(EventoDTO eventoDTO)
         {
             try
             {
+                Evento evento = mapper.Map<Evento>(eventoDTO);
                 repository.Add(evento);
                 if (await repository.SaveChangesAssync())
                 {
-                    return Created($"/api/evento/{evento.Id}", evento);
+                    return Created($"/api/evento/{evento.Id}", mapper.Map<EventoDTO>(evento));
                 }
             }
             catch (System.Exception)
@@ -85,18 +87,20 @@ namespace ProAgil.WebAPI.Controllers
             return NotFound();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put(Evento evento)
+        [HttpPut("{EventoId}")]
+        public async Task<IActionResult> Put(int eventoId, EventoDTO eventoDTO)
         {
             try
             {
-                Evento eventoDoBanco = await repository.GetEventoAssync(evento.Id, false);
+                Evento eventoDoBanco = await repository.GetEventoAssync(eventoId, false);
                 if (eventoDoBanco == null) return NotFound();
 
-                repository.Update(evento);
+                mapper.Map(eventoDTO, eventoDoBanco);
+
+                repository.Update(eventoDoBanco);
                 if (await repository.SaveChangesAssync())
                 {
-                    return Created($"/api/evento/{evento.Id}", evento);
+                    return Created($"/api/evento/{eventoId}", mapper.Map<EventoDTO>(eventoDoBanco));
                 }
             }
             catch (System.Exception)
