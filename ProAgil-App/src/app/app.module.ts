@@ -14,14 +14,20 @@ import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
 import { DateTimeFormatPipe } from './_helps/DateTimeFormat.pipe';
 
 import { AppComponent } from './app.component';
-import { EventosComponent } from './eventos/eventos.component';
 import { NavComponent } from './nav/nav.component';
+import { EventosComponent } from './eventos/eventos.component';
+import { PalestranteComponent } from './palestrante/palestrante.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ContatosComponent } from './contatos/contatos.component';
 
 @NgModule({
    declarations: [
       AppComponent,
-      EventosComponent,
       NavComponent,
+      EventosComponent,
+      PalestranteComponent,
+      DashboardComponent,
+      ContatosComponent,
       DateTimeFormatPipe
    ],
    imports: [

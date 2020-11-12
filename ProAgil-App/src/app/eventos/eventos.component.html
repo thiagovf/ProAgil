@@ -124,7 +124,7 @@
               <label>Data e Hora</label>
               <input type="text" class="form-control" bsDatepicker
                 value="{{ dataEvento | DateTimeFormat}}"
-                [(ngModel)]="dataEvento"
+                [(ngModel)]="dataEvento" [bsConfig]="{ dateInputFormat : 'DD/MM/YYYY hh:mm' }"
                 [ngClass]="{'is-invalid': registerForm.get('dataEvento').errors && registerForm.get('dataEvento').touched}"
                 formControlName="dataEvento" placeholder="">
               <div class="invalid-feedback"
