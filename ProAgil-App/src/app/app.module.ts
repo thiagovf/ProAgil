@@ -8,6 +8,8 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+ 
+import { ToastrModule, ToastContainerModule } from 'ngx-toastr';
 
 import { DateTimeFormatPipe } from './_helps/DateTimeFormat.pipe';
 
@@ -28,6 +30,7 @@ import { NavComponent } from './nav/nav.component';
       BsDatepickerModule.forRoot(),
       TooltipModule.forRoot(),
       ModalModule.forRoot(),
+      ToastrModule.forRoot(),
       AppRoutingModule,
       HttpClientModule,
       FormsModule,

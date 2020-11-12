@@ -6,7 +6,8 @@ import { EventoService } from '../_services/evento.service';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsLocaleService } from 'ngx-bootstrap/datepicker';
-import { templateJitUrl } from '@angular/compiler';
+import { ToastrService } from 'ngx-toastr';
+
 defineLocale('pt-br', ptBrLocale);
 
 @Component({
@@ -32,7 +33,8 @@ export class EventosComponent implements OnInit {
   constructor(
     private eventoService: EventoService,
     private fb: FormBuilder,
-    private localeService: BsLocaleService
+    private localeService: BsLocaleService,
+    private toastr: ToastrService
   ) {
     this.localeService.use('pt-br');
    }
@@ -80,7 +82,9 @@ export class EventosComponent implements OnInit {
       () => {
         template.hide();
         this.getEventos();
+        this.toastr.success('Deletado com Sucesso.');
       }, error => {
+        this.toastr.error('Erro ao tentar Deletar.');
         console.log(error);
       }
     );
@@ -93,7 +97,9 @@ export class EventosComponent implements OnInit {
         this.eventoService.put(this.evento).subscribe(() => {
           template.hide();
           this.getEventos();
+          this.toastr.success('Editado com Sucesso.');
         }, error => {
+          this.toastr.error(`Erro ao tentar Editar: ${error}`);
           console.log(error);
         });
       } else {
@@ -102,8 +108,10 @@ export class EventosComponent implements OnInit {
           (novoEvento: Evento) => {
             template.hide();
             this.getEventos();
+            this.toastr.success('Salvo com Sucesso.');
           },
           error => {
+            this.toastr.error(`Erro ao tentar Salvar: ${error}`);
             console.log(error);
           }
         );
@@ -138,7 +146,7 @@ export class EventosComponent implements OnInit {
         this.eventos = eventos;
         this.eventosFiltrados = eventos;
       }, error => {
-        console.log(error);
+        this.toastr.error(`Erro ao carregar eventos: ${error}`);
       }
     );
   }
