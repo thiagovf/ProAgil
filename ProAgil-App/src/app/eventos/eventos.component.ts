@@ -17,6 +17,7 @@ defineLocale('pt-br', ptBrLocale);
 })
 export class EventosComponent implements OnInit {
 
+  titulo = 'Eventos';
   bodyDeletarEvento: string;
   dataEvento: string;
   eventosFiltrados: Evento[];

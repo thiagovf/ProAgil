@@ -19,6 +19,7 @@ import { EventosComponent } from './eventos/eventos.component';
 import { PalestranteComponent } from './palestrante/palestrante.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ContatosComponent } from './contatos/contatos.component';
+import { TituloComponent } from './_shared/titulo/titulo.component';
 
 @NgModule({
    declarations: [
@@ -28,6 +29,7 @@ import { ContatosComponent } from './contatos/contatos.component';
       PalestranteComponent,
       DashboardComponent,
       ContatosComponent,
+      TituloComponent,
       DateTimeFormatPipe
    ],
    imports: [
