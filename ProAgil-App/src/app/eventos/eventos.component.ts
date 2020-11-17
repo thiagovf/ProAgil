@@ -30,6 +30,8 @@ export class EventosComponent implements OnInit {
   modalRef: BsModalRef;
   registerForm: FormGroup;
 
+  file: File;
+
   _filtroLista: string;
 
   constructor(
@@ -51,7 +53,7 @@ export class EventosComponent implements OnInit {
 
   validation() {
     this.registerForm = this.fb.group({
-      tema: ['',[Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      tema: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
       local: ['', Validators.required],
       dataEvento: ['', Validators.required],
       qtdPessoas: ['', [Validators.required, Validators.max(120000)]],
@@ -63,9 +65,17 @@ export class EventosComponent implements OnInit {
 
   editar(template: any, evento: Evento): void {
     this.openModal(template);
-    this.evento = evento;
+    this.evento = Object.assign({}, evento);
+    this.evento.imagemURL = '';
     this.modoSalvar = 'put';
-    this.registerForm.patchValue(evento);
+    this.registerForm.patchValue(this.evento);
+  }
+
+  onFileChange(event): void {
+    const reader = new FileReader();
+    if (event.target.files && event.target.files.length) {
+      this.file = event.target.files;
+    }
   }
 
   salvar(template: any): void {
@@ -92,10 +102,21 @@ export class EventosComponent implements OnInit {
     );
   }
 
+  private uploadImage(): void {
+
+    const nomeArquivo = this.evento.imagemURL.split('\\', 3);
+    this.evento.imagemURL = nomeArquivo[2];
+
+    this.eventoService.postUpload(this.file, nomeArquivo[2]).subscribe();
+  }
+
   salvarAlteracao(template: any): void {
     if (this.registerForm.valid) {
       if (this.modoSalvar === 'put') {
         this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+
+        this.uploadImage();
+
         this.eventoService.put(this.evento).subscribe(() => {
           template.hide();
           this.getEventos();
@@ -106,6 +127,9 @@ export class EventosComponent implements OnInit {
         });
       } else {
         this.evento = Object.assign({}, this.registerForm.value);
+
+        this.uploadImage();
+
         this.eventoService.post(this.evento).subscribe(
           (novoEvento: Evento) => {
             template.hide();
