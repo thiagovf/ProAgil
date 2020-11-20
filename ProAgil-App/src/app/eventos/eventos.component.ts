@@ -33,6 +33,9 @@ export class EventosComponent implements OnInit {
   file: File;
 
   _filtroLista: string;
+  fileNameToUpdate: string;
+
+  dataAtual: string;
 
   constructor(
     private eventoService: EventoService,
@@ -66,6 +69,7 @@ export class EventosComponent implements OnInit {
   editar(template: any, evento: Evento): void {
     this.openModal(template);
     this.evento = Object.assign({}, evento);
+    this.fileNameToUpdate = evento.imagemURL.toString();
     this.evento.imagemURL = '';
     this.modoSalvar = 'put';
     this.registerForm.patchValue(this.evento);
@@ -104,10 +108,20 @@ export class EventosComponent implements OnInit {
 
   private uploadImage(): void {
 
-    const nomeArquivo = this.evento.imagemURL.split('\\', 3);
-    this.evento.imagemURL = nomeArquivo[2];
-
-    this.eventoService.postUpload(this.file, nomeArquivo[2]).subscribe();
+    if (this.modoSalvar === 'post') {
+      const nomeArquivo = this.evento.imagemURL.split('\\', 3);
+      this.evento.imagemURL = nomeArquivo[2];
+      this.eventoService.postUpload(this.file, nomeArquivo[2])
+        .subscribe(() => {
+          this.dataAtual = new Date().getMilliseconds().toString();
+        });
+    } else {
+      this.evento.imagemURL = this.fileNameToUpdate;
+      this.eventoService.postUpload(this.file, this.fileNameToUpdate)
+        .subscribe(() => {
+          this.dataAtual = new Date().getMilliseconds().toString();
+        });
+    }
   }
 
   salvarAlteracao(template: any): void {
