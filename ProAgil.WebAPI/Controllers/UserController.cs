@@ -38,9 +38,10 @@ namespace ProAgil.WebAPI.Controllers
         }
 
         [HttpGet("GetUser")]
-        public async Task<IActionResult> GetUser(UserDTO userDTO)
+        [AllowAnonymous]
+        public async Task<IActionResult> GetUser()
         {
-            return Ok(userDTO);
+            return Ok(new UserDTO());
         }
 
         [HttpPost("Register")]
