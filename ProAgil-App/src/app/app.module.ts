@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
@@ -23,6 +23,8 @@ import { TituloComponent } from './_shared/titulo/titulo.component';
 import { UserComponent } from './user/user.component';
 import { LoginComponent } from './user/login/login.component';
 import { RegistrationComponent } from './user/registration/registration.component';
+import { EventoService } from './_services/evento.service';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
    declarations: [		
@@ -50,6 +52,14 @@ import { RegistrationComponent } from './user/registration/registration.componen
       FormsModule,
       BrowserAnimationsModule,
       ReactiveFormsModule
+   ],
+   providers: [
+      EventoService,
+      {
+         provide: HTTP_INTERCEPTORS,
+         useClass: AuthInterceptor,
+         multi: true
+      }
    ],
    bootstrap: [
       AppComponent
